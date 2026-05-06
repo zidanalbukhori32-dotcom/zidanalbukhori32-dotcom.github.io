@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cafe Cendana - Kopi & Santai</title>
+
+<style>
+:root {
+    --brown-dark: #6b4f3b;
+    --brown-light: #8b6a52;
+    --gold: #f39c12;
+    --bg-cream: #f9f5f2;
+    --green-wa: #25D366;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin:0;
+    /* Background gambar/gradasi dihapus, diganti putih bersih */
+    background-color: #ffffff; 
+    color: #333;
+}
+
+header {
+    background: var(--brown-dark);
+    color:white;
+    padding:40px 20px;
+    text-align:center;
+}
+
+.logo-container img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%; 
+    border: 5px solid rgba(255, 255, 255, 0.8);
+    background-color: white;
+}
+
+.hero { text-align:center; padding:20px; }
+
+.stats-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.stat-box {
+    background: #fdfaf8;
+    padding: 15px;
+    min-width: 140px;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.stat-box span { font-size: 0.75rem; color: #888; text-transform: uppercase; font-weight: bold; }
+.stat-box h2 { margin: 5px 0 0; color: var(--brown-dark); font-size: 1.4rem; }
+
+.cart-container, .feedback-container {
+    background: white;
+    border: 2px solid var(--brown-dark);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    max-width: 450px;
+    margin: 20px auto;
+    text-align: left;
+}
+
+.delivery-info, .feedback-form {
+    margin-top: 15px;
+    padding: 15px;
+    background: #fdfaf8;
+    border-radius: 10px;
+    border: 1px dashed var(--brown-light);
+}
+
+label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 0.9rem; }
+select, input, textarea {
+    width: 100%; padding: 10px; margin-bottom: 10px;
+    border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box;
+}
+
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+.star-rating input { display: none; }
+.star-rating label { font-size: 30px; color: #ccc; cursor: pointer; transition: 0.2s; }
+.star-rating input:checked ~ label, .star-rating label:hover, .star-rating label:hover ~ label { color: var(--gold); }
+
+.menu-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.menu-item {
+    background: white;
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+    transition: transform 0.2s;
+}
+.menu-item:hover { transform: translateY(-5px); }
+.menu-item img { width: 100%; height: 160px; object-fit: cover; border-radius: 10px; }
+
+.item-rating { color: var(--gold); font-size: 0.9rem; margin: 8px 0 2px; }
+
+.sold-badge {
+    display: inline-block;
+    background: #fff4e6;
+    color: #d48806;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border: 1px solid #ffe7ba;
+}
+
+.btn-add {
+    background: var(--brown-dark);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+}
+
+.wa-button {
+    display: block;
+    margin-top: 10px;
+    padding: 15px;
+    background: var(--green-wa);
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.wa-button.disabled { background: #ccc; pointer-events: none; }
+
+footer { text-align: center; padding: 30px; background: #f9f9f9; color: #666; margin-top: 40px; }
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo-container"><img src="logo.png" alt="Logo Cafe Cendana" onerror="this.src='https://via.placeholder.com/120?text=Logo'"></div>
+    <h1>Cafe Cendana</h1>
+    <p>Nikmati Kopi Autentik & Suasana Hangat</p>
+</header>
+
+<section class="hero">
+    <div class="stats-container">
+        <div class="stat-box">
+            <span>Total Pengunjung</span>
+            <h2 id="visitor-count">0</h2>
+        </div>
+        <div class="stat-box">
+            <span>Pesanan Sukses</span>
+            <h2 id="order-count">3.124</h2>
+        </div>
+    </div>
+
+    <div class="cart-container">
+        <h3>🛒 Pesanan Anda (<span id="total-qty">0</span>/10)</h3>
+        <div id="cart-items-list"><p style="color:#999;">Keranjang masih kosong...</p></div>
+        <hr>
+        <div class="delivery-info">
+            <label>📍 Area Pengiriman / Layanan:</label>
+            <select id="area-select" onchange="updateCart()">
+                <option value="">-- Pilih Lokasi --</option>
+                <option value="Bangsal">Bangsal</option>
+                <option value="Makan di tempat">Makan di tempat</option>
+                <option value="Gambirono">Gambirono</option>
+                <option value="Tanggul">Tanggul</option>
+            </select>
+            <label>🏠 Detail Alamat / No. Meja:</label>
+            <input type="text" id="alamat-detail" placeholder="Contoh: Meja 5 atau Jl. Melati No. 10" oninput="updateCart()">
+        </div>
+        <p style="font-size: 1.2rem;"><strong>Total: Rp<span id="grand-total">0</span></strong></p>
+        <a id="wa-link" class="wa-button disabled" target="_blank" onclick="incrementOrder()">Kirim Pesanan (WhatsApp)</a>
+    </div>
+
+    <div class="feedback-container">
+        <h3>📩 Saran & Kritik</h3>
+        <div class="feedback-form">
+            <label>Nama Anda:</label>
+            <input type="text" id="feedback-name" placeholder="Nama lengkap">
+            <label>Rating Anda:</label>
+            <div class="star-rating">
+                <input type="radio" name="stars" id="star5" value="5"><label for="star5">★</label>
+                <input type="radio" name="stars" id="star4" value="4"><label for="star4">★</label>
+                <input type="radio" name="stars" id="star3" value="3"><label for="star3">★</label>
+                <input type="radio" name="stars" id="star2" value="2"><label for="star2">★</label>
+                <input type="radio" name="stars" id="star1" value="1"><label for="star1">★</label>
+            </div>
+            <textarea id="feedback-text" rows="3" placeholder="Tulis masukan Anda..."></textarea>
+            <button class="wa-button" style="width:100%; border:none; cursor:pointer;" onclick="sendFeedback()">Kirim Ulasan</button>
+        </div>
+    </div>
+</section>
+
+<section class="menu">
+    <h2 style="text-align:center;">☕ Menu Favorit</h2>
+    <div class="menu-list">
+        <div class="menu-item">
+            <img src="https://d1r9hss9q19p18.cloudfront.net/uploads/2016/09/espresso-013-1024x681.jpg">
+            <h3>Kopi Hitam</h3>
+            <div class="item-rating">⭐⭐⭐⭐⭐ 4.9</div>
+            <div class="sold-badge">Terjual 842 kali</div>
+            <p><strong>Rp4.000</strong></p>
+            <button class="btn-add" onclick="changeQty('Kopi Hitam',4000,1)">+ Tambah</button>
+        </div>
+
+        <div class="menu-item">
+            <img src="https://img-global.cpcdn.com/recipes/74367c5d3cdbee48/680x781cq80/susu-kunyit-jahe-foto-resep-utama.jpg">
+            <h3>Suitjare</h3>
+            <div class="item-rating">⭐⭐⭐⭐⭐ 4.9</div>
+            <div class="sold-badge">Terjual 654 kali</div>
+            <p><strong>Rp5.000</strong></p>
+            <button class="btn-add" onclick="changeQty('Suitjare',5000,1)">+ Tambah</button>
+        </div>
+
+        <div class="menu-item">
+            <img src="https://www.jagel.id/api/listimage/v/Es-Cappucino-Susu-0-1205d7d2b50ef8d1.jpg">
+            <h3>Cappuccino Es</h3>
+            <div class="item-rating">⭐⭐⭐⭐⭐ 5.0</div>
+            <div class="sold-badge">Terjual 912 kali</div>
+            <p><strong>Rp5.000</strong></p>
+            <button class="btn-add" onclick="changeQty('Cappuccino Es',5000,1)">+ Tambah</button>
+        </div>
+
+        <div class="menu-item">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTI3WbsyKLU7yNylOUG3QrVUYQYnL8gEAoAAseVk_2N5w&s=10">
+            <h3>Cappuccino Panas</h3>
+            <div class="item-rating">⭐⭐⭐⭐☆ 4.5</div>
+            <div class="sold-badge">Terjual 345 kali</div>
+            <p><strong>Rp5.000</strong></p>
+            <button class="btn-add" onclick="changeQty('Cappuccino Panas',5000,1)">+ Tambah</button>
+        </div>
+
+        <div class="menu-item">
+            <img src="https://cdn0-production-images-kly.akamaized.net/ISIDPWdCOboIj9M7QEDeO-F-r1A=/640x360/smart/filters:quality(75):strip_icc()/kly-media-production/medias/970871/original/021248500_1440846143-header_chiantilvpa_com.jpg">
+            <h3>Kentang Goreng</h3>
+            <div class="item-rating">⭐⭐⭐⭐☆ 4.2</div>
+            <div class="sold-badge">Terjual 521 kali</div>
+            <p><strong>Rp5.000</strong></p>
+            <button class="btn-add" onclick="changeQty('Kentang Goreng',5000,1)">+ Tambah</button>
+       </div>
+
+       <div class="menu-item">
+            <img src="https://static.promediateknologi.id/crop/0x0:0x0/1200x0/webp/photo/esensi/2023/08/Resep-seblak-seafood.jpg">
+            <h3>Seblak</h3>
+            <div class="item-rating">⭐⭐⭐⭐⭐ 4.8</div>
+            <div class="sold-badge">Terjual 730 kali</div>
+            <p><strong>Rp8.000</strong></p>
+            <button class="btn-add" onclick="changeQty('Seblak',8000,1)">+ Tambah</button>
+        </div>
+
+        <div class="menu-item">
+            <img src="https://www.palmia.co.id/media/recipe/medium/9ad4091e258d26ff27c7179482b27e97.jpg">
+            <h3>Mie Acoy-Acoy</h3>
+            <div class="item-rating">⭐⭐⭐⭐⭐ 4.7</div>
+            <div class="sold-badge">Terjual 475 kali</div>
+            <p><strong>Rp8.000</strong></p>
+            <button class="btn-add" onclick="changeQty('Mie Acoy-Acoy',8000,1)">+ Tambah</button>
+        </div>
+
+        <div class="menu-item">
+            <img src="https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/8b46f5e3-3f5b-4152-823a-42af1d34936d_Go-Biz_20211006_152108.jpeg">
+            <h3>Ayam Bakar+Nasi</h3>
+            <div class="item-rating">⭐⭐⭐⭐⭐ 4.7</div>
+            <div class="sold-badge">Terjual 289 kali</div>
+            <p><strong>Rp20.000</strong></p>
+            <button class="btn-add" onclick="changeQty('Ayam Bakar+Nasi',20000,1)">+ Tambah</button>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 Cafe Cendana | Hubungi Kami: 0822-3255-2557</p>
+</footer>
+
+<script>
+let cart = {};
+const PHONE = "6282232552557";
+
+function initStats() {
+    let vCount = localStorage.getItem('visitor_count') || 4280;
+    vCount = parseInt(vCount) + 1;
+    localStorage.setItem('visitor_count', vCount);
+    document.getElementById('visitor-count').innerText = vCount.toLocaleString();
+
+    let oCount = localStorage.getItem('order_count') || 3124;
+    document.getElementById('order-count').innerText = parseInt(oCount).toLocaleString();
+}
+
+function incrementOrder() {
+    let oCount = localStorage.getItem('order_count') || 3124;
+    oCount = parseInt(oCount) + 1;
+    localStorage.setItem('order_count', oCount);
+    document.getElementById('order-count').innerText = oCount.toLocaleString();
+}
+
+function changeQty(name, price, delta) {
+    if(!cart[name]){
+        if(delta>0) cart[name]={price,qty:delta};
+    } else {
+        cart[name].qty+=delta;
+        if(cart[name].qty<=0) delete cart[name];
+    }
+    updateCart();
+}
+
+function updateCart(){
+    let list=document.getElementById('cart-items-list');
+    let totalQty=0, totalPrice=0;
+    list.innerHTML="";
+    for(let n in cart){
+        totalQty+=cart[n].qty;
+        totalPrice+=cart[n].qty*cart[n].price;
+        list.innerHTML+=`<div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <span>${n} (x${cart[n].qty})</span>
+            <div>
+                <button onclick="changeQty('${n}',${cart[n].price},-1)" style="cursor:pointer;">-</button> 
+                <button onclick="changeQty('${n}',${cart[n].price},1)" style="cursor:pointer;">+</button>
+            </div>
+        </div>`;
+    }
+    if(totalQty===0) list.innerHTML="<p style='color:#999;'>Keranjang masih kosong...</p>";
+    document.getElementById('total-qty').innerText=totalQty;
+    document.getElementById('grand-total').innerText=totalPrice.toLocaleString();
+
+    const area = document.getElementById('area-select').value;
+    const detail = document.getElementById('alamat-detail').value;
+    let wa = document.getElementById('wa-link');
+
+    if(totalQty > 0 && area !== "" && detail !== ""){
+        let msg = `Halo Cafe Cendana,%0A%0A*PESANAN BARU*%0A`;
+        for(let n in cart){ msg += `- ${n} (x${cart[n].qty})%0A`; }
+        msg += `%0A*Total: Rp${totalPrice.toLocaleString()}*%0A*Layanan:* ${area}%0A*Detail:* ${detail}`;
+        wa.href = `https://wa.me/${PHONE}?text=${msg}`;
+        wa.classList.remove('disabled');
+    } else { wa.classList.add('disabled'); }
+}
+
+function sendFeedback() {
+    const name = document.getElementById('feedback-name').value;
+    const text = document.getElementById('feedback-text').value;
+    const stars = document.querySelector('input[name="stars"]:checked');
+
+    if(!name || !text || !stars) {
+        alert("Mohon isi Nama, Rating Bintang, dan Pesan Anda.");
+        return;
+    }
+    let starString = "⭐".repeat(stars.value);
+    let msg = `Halo Cafe Cendana,%0A%0A*ULASAN PELANGGAN*%0A*Nama:* ${name}%0A*Rating:* ${starString}%0A*Pesan:* ${text}`;
+    window.open(`https://wa.me/${PHONE}?text=${msg}`, '_blank');
+}
+
+window.onload = initStats;
+</script>
+
+</body>
+</html>
